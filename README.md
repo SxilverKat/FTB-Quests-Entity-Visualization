@@ -16,5 +16,3 @@ Requires FTB Quests and FTB Library
 
 Credit:
 Inspired by the entity visualization in Better Questing hunt task.
-
-Thank You!
