@@ -5,10 +5,12 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "ftbquestsentityvis.refmap.json",
   "mixins": [
-    "KillTaskMixin"
+    "KillTaskMixin",
+    "ObservationTaskMixin"
   ],
   "client": [
-    "KillTaskClientMixin"
+    "KillTaskClientMixin",
+    "ObservationTaskClientMixin"
   ],
   "injectors": {
     "defaultRequire": 1

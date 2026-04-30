@@ -6,36 +6,63 @@ import com.sxilverr.ftbquestsentityvis.duck.OverrideMode;
 import dev.ftb.mods.ftblibrary.config.ConfigGroup;
 import dev.ftb.mods.ftblibrary.config.NameMap;
 import dev.ftb.mods.ftblibrary.icon.Icon;
-import dev.ftb.mods.ftbquests.quest.task.KillTask;
+import dev.ftb.mods.ftbquests.quest.task.ObservationTask;
+import dev.ftb.mods.ftbquests.quest.task.TaskType;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.function.Function;
+import java.lang.reflect.Field;
 
-@Mixin(KillTask.class)
-public abstract class KillTaskClientMixin {
+@Mixin(ObservationTask.class)
+public abstract class ObservationTaskClientMixin {
     @Shadow(remap = false)
-    private ResourceLocation entity;
+    private String toObserve;
 
-    @Inject(method = "getAltIcon", at = @At("HEAD"), cancellable = true, remap = false)
-    private void ftbquestsentityvis$replaceWithEntityIcon(CallbackInfoReturnable<Icon> cir) {
-        IKillTaskVisOptions opts = (IKillTaskVisOptions) this;
-        cir.setReturnValue(new EntityIcon(
-                entity,
-                opts.ftbquestsentityvis$getVisSize(),
-                opts.ftbquestsentityvis$getVisOffsetX(),
-                opts.ftbquestsentityvis$getVisOffsetY(),
-                opts.ftbquestsentityvis$getVisRotation(),
-                opts.ftbquestsentityvis$getSpinMode(),
-                opts.ftbquestsentityvis$getIdleMode(),
-                opts.ftbquestsentityvis$getWalkMode()
-        ));
+    @Shadow(remap = false)
+    public abstract TaskType getType();
+
+    @Unique private static volatile Field ftbquestsentityvis$observeTypeField;
+
+    @Unique
+    private boolean ftbquestsentityvis$isEntityType() {
+        try {
+            Field f = ftbquestsentityvis$observeTypeField;
+            if (f == null) {
+                f = ObservationTask.class.getDeclaredField("observeType");
+                f.setAccessible(true);
+                ftbquestsentityvis$observeTypeField = f;
+            }
+            Object value = f.get(this);
+            return value instanceof Enum<?> e && "ENTITY_TYPE".equals(e.name());
+        } catch (Throwable ignored) {
+            return false;
+        }
+    }
+
+    public Icon getAltIcon() {
+        if (ftbquestsentityvis$isEntityType() && toObserve != null && !toObserve.isEmpty()) {
+            ResourceLocation rl = ResourceLocation.tryParse(toObserve);
+            if (rl != null && BuiltInRegistries.ENTITY_TYPE.containsKey(rl)) {
+                IKillTaskVisOptions opts = (IKillTaskVisOptions) this;
+                return new EntityIcon(
+                        rl,
+                        opts.ftbquestsentityvis$getVisSize(),
+                        opts.ftbquestsentityvis$getVisOffsetX(),
+                        opts.ftbquestsentityvis$getVisOffsetY(),
+                        opts.ftbquestsentityvis$getVisRotation(),
+                        opts.ftbquestsentityvis$getSpinMode(),
+                        opts.ftbquestsentityvis$getIdleMode(),
+                        opts.ftbquestsentityvis$getWalkMode()
+                );
+            }
+        }
+        return getType().getIconSupplier();
     }
 
     @Inject(method = "fillConfigGroup", at = @At("TAIL"), remap = false)
@@ -67,23 +94,10 @@ public abstract class KillTaskClientMixin {
                 OverrideMode.USE_GLOBAL);
     }
 
+    @Unique
     private static NameMap<OverrideMode> ftbquestsentityvis$overrideNameMap(String key) {
         return NameMap.of(OverrideMode.USE_GLOBAL, OverrideMode.values())
-                .nameKey(v -> "ftbquests.task.ftbquests.kill." + key + "." + v.name().toLowerCase())
+                .nameKey(v -> "ftbquests.task.ftbquests.observation." + key + "." + v.name().toLowerCase())
                 .create();
-    }
-
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    @Redirect(method = "fillConfigGroup", remap = false,
-            at = @At(value = "INVOKE",
-                    target = "Ldev/ftb/mods/ftblibrary/config/NameMap$Builder;icon(Ljava/util/function/Function;)Ldev/ftb/mods/ftblibrary/config/NameMap$Builder;"))
-    private NameMap.Builder ftbquestsentityvis$replaceEntitySelectorIcons(NameMap.Builder builder, Function originalIconFunc) {
-        return builder.icon((Function<Object, Icon>) value -> {
-            if (value instanceof ResourceLocation rl) {
-                return new EntityIcon(rl, 1.0F, 0.0F, 0.0F, 0.0F,
-                        OverrideMode.USE_GLOBAL, OverrideMode.USE_GLOBAL, OverrideMode.USE_GLOBAL);
-            }
-            return (Icon) originalIconFunc.apply(value);
-        });
     }
 }

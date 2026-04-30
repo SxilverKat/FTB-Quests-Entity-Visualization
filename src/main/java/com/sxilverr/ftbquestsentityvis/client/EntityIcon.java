@@ -38,7 +38,7 @@ public class EntityIcon extends Icon {
     private final OverrideMode idleMode;
     private final OverrideMode walkMode;
 
-    private LivingEntity cachedEntity;
+    private Entity cachedEntity;
     private Level cachedLevel;
     private boolean creationFailed;
     private long lastAnimTickMs;
@@ -55,7 +55,7 @@ public class EntityIcon extends Icon {
         this.walkMode = walkMode;
     }
 
-    private LivingEntity getEntity() {
+    private Entity getEntity() {
         Minecraft mc = Minecraft.getInstance();
         Level level = mc.level;
         if (level == null) {
@@ -80,9 +80,9 @@ public class EntityIcon extends Icon {
         }
         try {
             Entity created = type.create(level);
-            if (created instanceof LivingEntity living) {
-                cachedEntity = living;
-                return living;
+            if (created != null) {
+                cachedEntity = created;
+                return created;
             }
         } catch (Throwable ignored) {
         }
@@ -96,7 +96,7 @@ public class EntityIcon extends Icon {
         return ItemIcon.getItemIcon(egg != null ? egg : Items.SPAWNER);
     }
 
-    private void advanceAnimations(LivingEntity entity) {
+    private void advanceAnimations(Entity entity) {
         boolean idle = idleMode.resolve(Config.IDLE_ANIMATION.get());
         boolean walk = walkMode.resolve(Config.WALK_ANIMATION.get());
         if (!idle && !walk) {
@@ -113,19 +113,20 @@ public class EntityIcon extends Icon {
         }
         long ticks = Math.min(elapsed / ANIM_TICK_INTERVAL_MS, 20L);
         lastAnimTickMs += ticks * ANIM_TICK_INTERVAL_MS;
+        LivingEntity living = entity instanceof LivingEntity le ? le : null;
         for (long i = 0; i < ticks; i++) {
             if (idle) {
                 entity.tickCount++;
             }
-            if (walk) {
-                entity.walkAnimation.update(WALK_ANIM_SPEED, 1.0F);
+            if (walk && living != null) {
+                living.walkAnimation.update(WALK_ANIM_SPEED, 1.0F);
             }
         }
     }
 
     @Override
     public void draw(GuiGraphics graphics, int x, int y, int w, int h) {
-        LivingEntity entity = getEntity();
+        Entity entity = getEntity();
         if (entity == null) {
             fallbackIcon().draw(graphics, x, y, w, h);
             return;
@@ -159,16 +160,22 @@ public class EntityIcon extends Icon {
         pose.mulPose(Axis.XP.rotationDegrees(180.0F + tilt));
         pose.mulPose(Axis.YP.rotationDegrees(yaw));
 
-        float prevYBodyRot = entity.yBodyRot;
+        LivingEntity living = entity instanceof LivingEntity le ? le : null;
         float prevYRot = entity.getYRot();
         float prevXRot = entity.getXRot();
-        float prevYHeadRotO = entity.yHeadRotO;
-        float prevYHeadRot = entity.yHeadRot;
-        entity.yBodyRot = 0.0F;
+        float prevYBodyRot = 0.0F;
+        float prevYHeadRotO = 0.0F;
+        float prevYHeadRot = 0.0F;
+        if (living != null) {
+            prevYBodyRot = living.yBodyRot;
+            prevYHeadRotO = living.yHeadRotO;
+            prevYHeadRot = living.yHeadRot;
+            living.yBodyRot = 0.0F;
+            living.yHeadRot = 0.0F;
+            living.yHeadRotO = 0.0F;
+        }
         entity.setYRot(0.0F);
         entity.setXRot(0.0F);
-        entity.yHeadRot = 0.0F;
-        entity.yHeadRotO = 0.0F;
 
         int packedLight = Config.FULL_BRIGHT.get() ? LightTexture.FULL_BRIGHT : 15728640;
 
@@ -183,11 +190,13 @@ public class EntityIcon extends Icon {
             dispatcher.setRenderShadow(true);
             pose.popPose();
             Lighting.setupFor3DItems();
-            entity.yBodyRot = prevYBodyRot;
             entity.setYRot(prevYRot);
             entity.setXRot(prevXRot);
-            entity.yHeadRotO = prevYHeadRotO;
-            entity.yHeadRot = prevYHeadRot;
+            if (living != null) {
+                living.yBodyRot = prevYBodyRot;
+                living.yHeadRotO = prevYHeadRotO;
+                living.yHeadRot = prevYHeadRot;
+            }
         }
     }
 
