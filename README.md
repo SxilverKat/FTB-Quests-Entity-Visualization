@@ -4,6 +4,9 @@ FTB Quests Entity Visualization replaces the boring spawn‑egg icon in a kill t
 
 Each task has its own size, X/Y offset, and rotation options, which are added into the FTB Quests task editor.
 
+<img width="328" height="450" alt="image" src="https://github.com/user-attachments/assets/cb289490-3d45-431a-b773-1ca0f0caad1d" />
+
+
 Config:
 - Toggle spin, idle, and walk animation defaults.
 - Spin speed multiplier
