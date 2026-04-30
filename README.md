@@ -11,11 +11,14 @@ Config:
 - Full‑bright rendering toggle
 
 Compatibility:
-Requires FTB Quests and FTB Library
+Requires FTB Quests and FTB Library.
+
 FTB Quests: https://www.curseforge.com/minecraft/mc-mods/ftb-quests-forge
+
 FTB Library: https://www.curseforge.com/minecraft/mc-mods/ftb-library-forge
 
 
 Credit:
 Inspired by the entity visualization in Better Questing hunt task.
+
 Better Questing: https://www.curseforge.com/minecraft/mc-mods/better-questing
