@@ -10,6 +10,17 @@ Config:
 - Camera tilt
 - Full‑bright rendering toggle
 
+In Game FTB Quests Options:
+- Entity Visualization Size
+- Entity Visualization X Offset
+- Entity Visualization Y Offset
+- Entity Visualization Rotation
+- Entity Visualization Spin (Use Global/Always Spin/Never Spin)
+- Entity Visualization Idle (Use Global/Always Idle/Never Idle)
+- Entity Visualization Walk (Use Global/Always Walk/Never Walk)
+- Black Silhouette (None/Until Available/Until Completed)
+- Use Task Icon As Quest Icon (False/True)
+
 Compatibility:
 Requires FTB Quests and FTB Library.
 
