@@ -28,4 +28,12 @@ public interface IKillTaskVisOptions {
     OverrideMode ftbquestsentityvis$getWalkMode();
 
     void ftbquestsentityvis$setWalkMode(OverrideMode mode);
+
+    SilhouetteMode ftbquestsentityvis$getSilhouetteMode();
+
+    void ftbquestsentityvis$setSilhouetteMode(SilhouetteMode mode);
+
+    boolean ftbquestsentityvis$getUseAsQuestIcon();
+
+    void ftbquestsentityvis$setUseAsQuestIcon(boolean useAsQuestIcon);
 }

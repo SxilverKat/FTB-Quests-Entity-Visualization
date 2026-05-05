@@ -23,6 +23,8 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import java.util.function.BooleanSupplier;
+
 @OnlyIn(Dist.CLIENT)
 public class EntityIcon extends Icon {
     private static final long SPIN_PERIOD_MS = 15000L;
@@ -37,6 +39,7 @@ public class EntityIcon extends Icon {
     private final OverrideMode spinMode;
     private final OverrideMode idleMode;
     private final OverrideMode walkMode;
+    private final BooleanSupplier silhouetteCheck;
 
     private Entity cachedEntity;
     private Level cachedLevel;
@@ -45,6 +48,12 @@ public class EntityIcon extends Icon {
 
     public EntityIcon(ResourceLocation entityId, float sizeMultiplier, float offsetX, float offsetY,
                       float rotationOffset, OverrideMode spinMode, OverrideMode idleMode, OverrideMode walkMode) {
+        this(entityId, sizeMultiplier, offsetX, offsetY, rotationOffset, spinMode, idleMode, walkMode, null);
+    }
+
+    public EntityIcon(ResourceLocation entityId, float sizeMultiplier, float offsetX, float offsetY,
+                      float rotationOffset, OverrideMode spinMode, OverrideMode idleMode, OverrideMode walkMode,
+                      BooleanSupplier silhouetteCheck) {
         this.entityId = entityId;
         this.sizeMultiplier = sizeMultiplier;
         this.offsetX = offsetX;
@@ -53,6 +62,7 @@ public class EntityIcon extends Icon {
         this.spinMode = spinMode;
         this.idleMode = idleMode;
         this.walkMode = walkMode;
+        this.silhouetteCheck = silhouetteCheck;
     }
 
     private Entity getEntity() {
@@ -111,8 +121,14 @@ public class EntityIcon extends Icon {
         if (elapsed < ANIM_TICK_INTERVAL_MS) {
             return;
         }
-        long ticks = Math.min(elapsed / ANIM_TICK_INTERVAL_MS, 20L);
-        lastAnimTickMs += ticks * ANIM_TICK_INTERVAL_MS;
+        long ticks;
+        if (elapsed > ANIM_TICK_INTERVAL_MS * 4L) {
+            ticks = 1L;
+            lastAnimTickMs = now;
+        } else {
+            ticks = elapsed / ANIM_TICK_INTERVAL_MS;
+            lastAnimTickMs += ticks * ANIM_TICK_INTERVAL_MS;
+        }
         LivingEntity living = entity instanceof LivingEntity le ? le : null;
         for (long i = 0; i < ticks; i++) {
             if (idle) {
@@ -134,9 +150,10 @@ public class EntityIcon extends Icon {
 
         advanceAnimations(entity);
 
+        float effectiveSize = QuestSizeContext.resolveSize(sizeMultiplier);
         float bbHeight = Math.max(entity.getBbHeight(), 0.1F);
         float bbWidth = Math.max(entity.getBbWidth(), 0.1F);
-        float scale = Math.min(h / bbHeight, w / bbWidth) * Math.max(sizeMultiplier, 0.01F);
+        float scale = Math.min(h / bbHeight, w / bbWidth) * Math.max(effectiveSize, 0.01F);
         if (scale <= 0.0F) {
             fallbackIcon().draw(graphics, x, y, w, h);
             return;
@@ -177,16 +194,23 @@ public class EntityIcon extends Icon {
         entity.setYRot(0.0F);
         entity.setXRot(0.0F);
 
-        int packedLight = Config.FULL_BRIGHT.get() ? LightTexture.FULL_BRIGHT : 15728640;
+        boolean silhouette = silhouetteCheck != null && silhouetteCheck.getAsBoolean();
+        int packedLight = silhouette || Config.FULL_BRIGHT.get() ? LightTexture.FULL_BRIGHT : 15728640;
 
         Lighting.setupForEntityInInventory();
         EntityRenderDispatcher dispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
         dispatcher.setRenderShadow(false);
         try {
+            if (silhouette) {
+                RenderSystem.setShaderColor(0.0F, 0.0F, 0.0F, 1.0F);
+            }
             RenderSystem.runAsFancy(() -> dispatcher.render(entity, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F, pose, graphics.bufferSource(), packedLight));
             graphics.flush();
         } catch (Throwable ignored) {
         } finally {
+            if (silhouette) {
+                RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+            }
             dispatcher.setRenderShadow(true);
             pose.popPose();
             Lighting.setupFor3DItems();

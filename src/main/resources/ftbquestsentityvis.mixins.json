@@ -6,11 +6,13 @@
   "refmap": "ftbquestsentityvis.refmap.json",
   "mixins": [
     "KillTaskMixin",
-    "ObservationTaskMixin"
+    "ObservationTaskMixin",
+    "QuestMixin"
   ],
   "client": [
     "KillTaskClientMixin",
-    "ObservationTaskClientMixin"
+    "ObservationTaskClientMixin",
+    "QuestClientMixin"
   ],
   "injectors": {
     "defaultRequire": 1

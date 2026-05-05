@@ -1,4 +1,7 @@
 {
+  "ftbquests.quest.appearance.entity_vis_size": "Entity Visualization Size",
+
+  "ftbquests.task.ftbquests.kill.entity_use_tag": "Use Entity Tag",
   "ftbquests.task.ftbquests.kill.entity_vis_size": "Entity Visualization Size",
   "ftbquests.task.ftbquests.kill.entity_vis_offset_x": "Entity Visualization X Offset",
   "ftbquests.task.ftbquests.kill.entity_vis_offset_y": "Entity Visualization Y Offset",
@@ -15,6 +18,11 @@
   "ftbquests.task.ftbquests.kill.entity_vis_walk_mode.use_global": "Use Global",
   "ftbquests.task.ftbquests.kill.entity_vis_walk_mode.force_on": "Always Walk",
   "ftbquests.task.ftbquests.kill.entity_vis_walk_mode.force_off": "Never Walk",
+  "ftbquests.task.ftbquests.kill.entity_vis_silhouette_mode": "Black Silhouette",
+  "ftbquests.task.ftbquests.kill.entity_vis_silhouette_mode.none": "None",
+  "ftbquests.task.ftbquests.kill.entity_vis_silhouette_mode.until_available": "Until Available",
+  "ftbquests.task.ftbquests.kill.entity_vis_silhouette_mode.until_completed": "Until Completed",
+  "ftbquests.task.ftbquests.kill.entity_vis_use_as_quest_icon": "Use Task Icon As Quest Icon",
 
   "ftbquests.task.ftbquests.observation.entity_vis_size": "Entity Visualization Size",
   "ftbquests.task.ftbquests.observation.entity_vis_offset_x": "Entity Visualization X Offset",
@@ -31,5 +39,10 @@
   "ftbquests.task.ftbquests.observation.entity_vis_walk_mode": "Entity Visualization Walk",
   "ftbquests.task.ftbquests.observation.entity_vis_walk_mode.use_global": "Use Global",
   "ftbquests.task.ftbquests.observation.entity_vis_walk_mode.force_on": "Always Walk",
-  "ftbquests.task.ftbquests.observation.entity_vis_walk_mode.force_off": "Never Walk"
+  "ftbquests.task.ftbquests.observation.entity_vis_walk_mode.force_off": "Never Walk",
+  "ftbquests.task.ftbquests.observation.entity_vis_silhouette_mode": "Black Silhouette",
+  "ftbquests.task.ftbquests.observation.entity_vis_silhouette_mode.none": "None",
+  "ftbquests.task.ftbquests.observation.entity_vis_silhouette_mode.until_available": "Until Available",
+  "ftbquests.task.ftbquests.observation.entity_vis_silhouette_mode.until_completed": "Until Completed",
+  "ftbquests.task.ftbquests.observation.entity_vis_use_as_quest_icon": "Use Task Icon As Quest Icon"
 }
