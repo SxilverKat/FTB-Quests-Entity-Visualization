@@ -26,3 +26,5 @@ forge*changelog.txt
 
 # Claude Code workspace
 .claude
+CLAUDE.md
+MEMORY.md

@@ -4,8 +4,9 @@ import com.sxilverr.ftbquestsentityvis.duck.IKillTaskVisOptions;
 import com.sxilverr.ftbquestsentityvis.duck.OverrideMode;
 import com.sxilverr.ftbquestsentityvis.duck.SilhouetteMode;
 import dev.ftb.mods.ftbquests.quest.task.ObservationTask;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -62,7 +63,7 @@ public abstract class ObservationTaskMixin implements IKillTaskVisOptions {
     @Override public void ftbquestsentityvis$setUseAsQuestIcon(boolean useAsQuestIcon) { this.ftbquestsentityvis$useAsQuestIcon = useAsQuestIcon; }
 
     @Inject(method = "writeData", at = @At("TAIL"), remap = false)
-    private void ftbquestsentityvis$writeData(CompoundTag nbt, CallbackInfo ci) {
+    private void ftbquestsentityvis$writeData(CompoundTag nbt, HolderLookup.Provider provider, CallbackInfo ci) {
         nbt.putFloat(ftbquestsentityvis$KEY_SIZE, ftbquestsentityvis$visSize);
         nbt.putFloat(ftbquestsentityvis$KEY_OFFSET_X, ftbquestsentityvis$visOffsetX);
         nbt.putFloat(ftbquestsentityvis$KEY_OFFSET_Y, ftbquestsentityvis$visOffsetY);
@@ -75,7 +76,7 @@ public abstract class ObservationTaskMixin implements IKillTaskVisOptions {
     }
 
     @Inject(method = "readData", at = @At("TAIL"), remap = false)
-    private void ftbquestsentityvis$readData(CompoundTag nbt, CallbackInfo ci) {
+    private void ftbquestsentityvis$readData(CompoundTag nbt, HolderLookup.Provider provider, CallbackInfo ci) {
         ftbquestsentityvis$visSize = nbt.contains(ftbquestsentityvis$KEY_SIZE) ? nbt.getFloat(ftbquestsentityvis$KEY_SIZE) : 1.0F;
         ftbquestsentityvis$visOffsetX = nbt.contains(ftbquestsentityvis$KEY_OFFSET_X) ? nbt.getFloat(ftbquestsentityvis$KEY_OFFSET_X) : 0.0F;
         ftbquestsentityvis$visOffsetY = nbt.contains(ftbquestsentityvis$KEY_OFFSET_Y) ? nbt.getFloat(ftbquestsentityvis$KEY_OFFSET_Y) : 0.0F;
@@ -88,7 +89,7 @@ public abstract class ObservationTaskMixin implements IKillTaskVisOptions {
     }
 
     @Inject(method = "writeNetData", at = @At("TAIL"), remap = false)
-    private void ftbquestsentityvis$writeNetData(FriendlyByteBuf buf, CallbackInfo ci) {
+    private void ftbquestsentityvis$writeNetData(RegistryFriendlyByteBuf buf, CallbackInfo ci) {
         buf.writeFloat(ftbquestsentityvis$visSize);
         buf.writeFloat(ftbquestsentityvis$visOffsetX);
         buf.writeFloat(ftbquestsentityvis$visOffsetY);
@@ -101,7 +102,7 @@ public abstract class ObservationTaskMixin implements IKillTaskVisOptions {
     }
 
     @Inject(method = "readNetData", at = @At("TAIL"), remap = false)
-    private void ftbquestsentityvis$readNetData(FriendlyByteBuf buf, CallbackInfo ci) {
+    private void ftbquestsentityvis$readNetData(RegistryFriendlyByteBuf buf, CallbackInfo ci) {
         ftbquestsentityvis$visSize = buf.readFloat();
         ftbquestsentityvis$visOffsetX = buf.readFloat();
         ftbquestsentityvis$visOffsetY = buf.readFloat();

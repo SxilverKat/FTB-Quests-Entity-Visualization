@@ -1,19 +1,19 @@
 package com.sxilverr.ftbquestsentityvis;
 
-import net.minecraftforge.common.ForgeConfigSpec;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 public final class Config {
-    public static final ForgeConfigSpec CLIENT_SPEC;
+    public static final ModConfigSpec CLIENT_SPEC;
 
-    public static final ForgeConfigSpec.BooleanValue MOBS_SPIN;
-    public static final ForgeConfigSpec.DoubleValue SPIN_SPEED;
-    public static final ForgeConfigSpec.DoubleValue TILT_DEGREES;
-    public static final ForgeConfigSpec.BooleanValue FULL_BRIGHT;
-    public static final ForgeConfigSpec.BooleanValue IDLE_ANIMATION;
-    public static final ForgeConfigSpec.BooleanValue WALK_ANIMATION;
+    public static final ModConfigSpec.BooleanValue MOBS_SPIN;
+    public static final ModConfigSpec.DoubleValue SPIN_SPEED;
+    public static final ModConfigSpec.DoubleValue TILT_DEGREES;
+    public static final ModConfigSpec.BooleanValue FULL_BRIGHT;
+    public static final ModConfigSpec.BooleanValue IDLE_ANIMATION;
+    public static final ModConfigSpec.BooleanValue WALK_ANIMATION;
 
     static {
-        ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
+        ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
         MOBS_SPIN = builder.comment("Do mobs spin?").define("mobsSpin", true);
         SPIN_SPEED = builder.comment("Spin speed multiplier.").defineInRange("spinSpeed", 1.0, 0.0, 10.0);
         TILT_DEGREES = builder.comment("Camera tilt in degrees.").defineInRange("tiltDegrees", 15.0, -90.0, 90.0);

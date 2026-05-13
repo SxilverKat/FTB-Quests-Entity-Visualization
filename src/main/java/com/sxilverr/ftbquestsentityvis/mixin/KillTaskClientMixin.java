@@ -2,7 +2,6 @@ package com.sxilverr.ftbquestsentityvis.mixin;
 
 import com.sxilverr.ftbquestsentityvis.client.ClientStateUtil;
 import com.sxilverr.ftbquestsentityvis.client.EntityIcon;
-import com.sxilverr.ftbquestsentityvis.duck.IKillTaskTagOption;
 import com.sxilverr.ftbquestsentityvis.duck.IKillTaskVisOptions;
 import com.sxilverr.ftbquestsentityvis.duck.OverrideMode;
 import com.sxilverr.ftbquestsentityvis.duck.SilhouetteMode;
@@ -12,7 +11,6 @@ import dev.ftb.mods.ftblibrary.icon.Icon;
 import dev.ftb.mods.ftbquests.quest.task.KillTask;
 import dev.ftb.mods.ftbquests.quest.task.Task;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
@@ -31,7 +29,10 @@ import java.util.function.Function;
 @Mixin(KillTask.class)
 public abstract class KillTaskClientMixin {
     @Shadow(remap = false)
-    private ResourceLocation entity;
+    private ResourceLocation entityTypeId;
+
+    @Shadow(remap = false)
+    private TagKey<EntityType<?>> entityTypeTag;
 
     @Inject(method = "getAltIcon", at = @At("HEAD"), cancellable = true, remap = false)
     private void ftbquestsentityvis$replaceWithEntityIcon(CallbackInfoReturnable<Icon> cir) {
@@ -56,26 +57,18 @@ public abstract class KillTaskClientMixin {
 
     @Unique
     private ResourceLocation ftbquestsentityvis$resolveVisualEntity() {
-        if (entity == null) {
-            return null;
+        if (entityTypeTag != null) {
+            Optional<EntityType<?>> first = BuiltInRegistries.ENTITY_TYPE.getTag(entityTypeTag)
+                    .flatMap(set -> set.stream().findFirst())
+                    .map(holder -> holder.value());
+            return first.map(BuiltInRegistries.ENTITY_TYPE::getKey).orElse(null);
         }
-        boolean useTag = ((IKillTaskTagOption) this).ftbquestsentityvis$getUseTag();
-        if (!useTag) {
-            return entity;
-        }
-        TagKey<EntityType<?>> tag = TagKey.create(Registries.ENTITY_TYPE, entity);
-        Optional<EntityType<?>> first = BuiltInRegistries.ENTITY_TYPE.getTag(tag)
-                .flatMap(set -> set.stream().findFirst())
-                .map(holder -> holder.value());
-        return first.map(BuiltInRegistries.ENTITY_TYPE::getKey).orElse(null);
+        return entityTypeId;
     }
 
     @Inject(method = "fillConfigGroup", at = @At("TAIL"), remap = false)
     private void ftbquestsentityvis$addVisConfig(ConfigGroup config, CallbackInfo ci) {
         IKillTaskVisOptions opts = (IKillTaskVisOptions) this;
-        IKillTaskTagOption tagOpts = (IKillTaskTagOption) this;
-        config.addBool("entity_use_tag", tagOpts.ftbquestsentityvis$getUseTag(),
-                tagOpts::ftbquestsentityvis$setUseTag, false);
         config.addDouble("entity_vis_size", opts.ftbquestsentityvis$getVisSize(),
                 v -> opts.ftbquestsentityvis$setVisSize(v.floatValue()),
                 1.0D, 0.0D, 10.0D);
@@ -108,12 +101,14 @@ public abstract class KillTaskClientMixin {
                 opts::ftbquestsentityvis$setUseAsQuestIcon, false);
     }
 
+    @Unique
     private static NameMap<OverrideMode> ftbquestsentityvis$overrideNameMap(String key) {
         return NameMap.of(OverrideMode.USE_GLOBAL, OverrideMode.values())
                 .nameKey(v -> "ftbquests.task.ftbquests.kill." + key + "." + v.name().toLowerCase())
                 .create();
     }
 
+    @Unique
     private static NameMap<SilhouetteMode> ftbquestsentityvis$silhouetteNameMap() {
         return NameMap.of(SilhouetteMode.NONE, SilhouetteMode.values())
                 .nameKey(v -> "ftbquests.task.ftbquests.kill.entity_vis_silhouette_mode." + v.name().toLowerCase())
@@ -121,10 +116,10 @@ public abstract class KillTaskClientMixin {
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    @Redirect(method = "fillConfigGroup", remap = false,
+    @Redirect(method = "scanEntityTypes", remap = false,
             at = @At(value = "INVOKE",
                     target = "Ldev/ftb/mods/ftblibrary/config/NameMap$Builder;icon(Ljava/util/function/Function;)Ldev/ftb/mods/ftblibrary/config/NameMap$Builder;"))
-    private NameMap.Builder ftbquestsentityvis$replaceEntitySelectorIcons(NameMap.Builder builder, Function originalIconFunc) {
+    private static NameMap.Builder ftbquestsentityvis$replaceEntitySelectorIcons(NameMap.Builder builder, Function originalIconFunc) {
         return builder.icon((Function<Object, Icon>) value -> {
             if (value instanceof ResourceLocation rl) {
                 return new EntityIcon(rl, 1.0F, 0.0F, 0.0F, 0.0F,

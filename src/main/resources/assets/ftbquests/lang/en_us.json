@@ -1,7 +1,6 @@
 {
   "ftbquests.quest.appearance.entity_vis_size": "Entity Visualization Size",
 
-  "ftbquests.task.ftbquests.kill.entity_use_tag": "Use Entity Tag",
   "ftbquests.task.ftbquests.kill.entity_vis_size": "Entity Visualization Size",
   "ftbquests.task.ftbquests.kill.entity_vis_offset_x": "Entity Visualization X Offset",
   "ftbquests.task.ftbquests.kill.entity_vis_offset_y": "Entity Visualization Y Offset",

@@ -3,6 +3,7 @@ package com.sxilverr.ftbquestsentityvis.mixin;
 import com.sxilverr.ftbquestsentityvis.client.QuestSizeWrappedIcon;
 import com.sxilverr.ftbquestsentityvis.duck.IKillTaskVisOptions;
 import com.sxilverr.ftbquestsentityvis.duck.IQuestVisOptions;
+import dev.ftb.mods.ftblibrary.config.ConfigGroup;
 import dev.ftb.mods.ftblibrary.icon.Icon;
 import dev.ftb.mods.ftblibrary.icon.IconAnimation;
 import dev.ftb.mods.ftbquests.quest.Quest;
@@ -10,6 +11,7 @@ import dev.ftb.mods.ftbquests.quest.task.Task;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.ArrayList;
@@ -42,5 +44,14 @@ public abstract class QuestClientMixin {
         }
         IQuestVisOptions opts = (IQuestVisOptions) this;
         cir.setReturnValue(new QuestSizeWrappedIcon(original, opts.ftbquestsentityvis$getQuestVisSize()));
+    }
+
+    @Inject(method = "fillConfigGroup", at = @At("TAIL"), remap = false)
+    private void ftbquestsentityvis$fillConfigGroup(ConfigGroup config, CallbackInfo ci) {
+        ConfigGroup appearance = config.getOrCreateSubgroup("appearance");
+        IQuestVisOptions opts = (IQuestVisOptions) this;
+        appearance.addDouble("entity_vis_size", opts.ftbquestsentityvis$getQuestVisSize(),
+                v -> opts.ftbquestsentityvis$setQuestVisSize(v.floatValue()),
+                1.0D, 0.0D, 10.0D);
     }
 }
