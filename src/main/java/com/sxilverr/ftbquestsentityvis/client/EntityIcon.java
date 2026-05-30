@@ -238,6 +238,11 @@ public class EntityIcon extends Icon {
     }
 
     @Override
+    public String toString() {
+        return "entity:" + entityId;
+    }
+
+    @Override
     public int hashCode() {
         int h = entityId.hashCode();
         h = h * 31 + Float.hashCode(sizeMultiplier);

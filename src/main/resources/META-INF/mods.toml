@@ -38,3 +38,10 @@ description='''${mod_description}'''
     versionRange="[2001.2,)"
     ordering="AFTER"
     side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="questsadditions"
+    mandatory=false
+    versionRange="[0,)"
+    ordering="AFTER"
+    side="BOTH"
