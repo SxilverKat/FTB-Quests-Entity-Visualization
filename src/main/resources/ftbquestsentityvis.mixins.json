@@ -5,14 +5,18 @@
   "compatibilityLevel": "JAVA_21",
   "refmap": "ftbquestsentityvis.refmap.json",
   "mixins": [
+    "ChapterImageMixin",
     "KillTaskMixin",
     "ObservationTaskMixin",
     "QuestMixin"
   ],
   "client": [
+    "ChapterImageClientMixin",
     "KillTaskClientMixin",
     "ObservationTaskClientMixin",
-    "QuestClientMixin"
+    "QuestClientMixin",
+    "QuestPanelMixin",
+    "QuestScreenAccessor"
   ],
   "injectors": {
     "defaultRequire": 1
