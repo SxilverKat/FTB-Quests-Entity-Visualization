@@ -8,6 +8,7 @@ import com.sxilverr.ftbquestsentityvis.Config;
 import com.sxilverr.ftbquestsentityvis.duck.OverrideMode;
 import dev.ftb.mods.ftblibrary.icon.Icon;
 import dev.ftb.mods.ftblibrary.icon.ItemIcon;
+import dev.ftb.mods.ftblibrary.ui.GuiHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.LightTexture;
@@ -221,6 +222,7 @@ public class EntityIcon extends Icon {
                 living.yHeadRotO = prevYHeadRotO;
                 living.yHeadRot = prevYHeadRot;
             }
+            GuiHelper.setupDrawing();
         }
     }
 
