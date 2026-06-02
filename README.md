@@ -1,7 +1,7 @@
 <img width="768" height="456" alt="FTB Quests Entity Visualization Banner" src="https://github.com/user-attachments/assets/f1812ded-a3d0-4aec-806e-846fff16cb52" />
 
 This is an unofficial add-on mod for FTB Quests.
-
+  a
 
 This mod replaces the boring spawn‑egg icon in a kill task with the actual entity rendered live in 3D.
 
