@@ -18,7 +18,8 @@
     "ObservationTaskClientMixin",
     "QuestClientMixin",
     "QuestPanelMixin",
-    "QuestScreenAccessor"
+    "QuestScreenAccessor",
+    "ViewQuestPanelMixin"
   ],
   "injectors": {
     "defaultRequire": 1

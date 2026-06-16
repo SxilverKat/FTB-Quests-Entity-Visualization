@@ -24,6 +24,7 @@
 
   "ftbquestsentityvis.config.width": "Display Width",
   "ftbquestsentityvis.config.height": "Display Height",
+  "ftbquestsentityvis.config.align": "Alignment",
   "ftbquestsentityvis.config.order": "Draw Order",
   "ftbquestsentityvis.config.dev": "Editors Only",
   "ftbquestsentityvis.config.hover": "Hover Text"

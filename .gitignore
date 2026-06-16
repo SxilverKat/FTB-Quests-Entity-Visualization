@@ -26,6 +26,7 @@ forge*changelog.txt
 
 # Claude Code workspace
 .claude
+CLAUDE.md
 
 # Local compile-only mod jars (third-party, not redistributed)
 libs

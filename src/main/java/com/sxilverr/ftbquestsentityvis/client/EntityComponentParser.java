@@ -1,0 +1,20 @@
+package com.sxilverr.ftbquestsentityvis.client;
+
+import dev.ftb.mods.ftblibrary.util.CustomComponentParser;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
+import java.util.Map;
+
+@OnlyIn(Dist.CLIENT)
+public final class EntityComponentParser implements CustomComponentParser {
+    @Override
+    public Component parse(String string, Map<String, String> properties) {
+        if (!properties.containsKey("entity")) {
+            return null;
+        }
+        return MutableComponent.create(EntityComponent.fromProperties(properties));
+    }
+}
