@@ -8,13 +8,16 @@
     "ChapterImageMixin",
     "KillTaskMixin",
     "ObservationTaskMixin",
-    "QuestMixin"
+    "QuestMixin",
+    "TaskMixin"
   ],
   "client": [
     "ChapterImageClientMixin",
+    "ContextMenuBuilderMixin",
     "KillTaskClientMixin",
     "ObservationTaskClientMixin",
     "QuestClientMixin",
+    "QuestObjectBaseClientMixin",
     "QuestPanelMixin",
     "QuestScreenAccessor",
     "ViewQuestPanelMixin"
