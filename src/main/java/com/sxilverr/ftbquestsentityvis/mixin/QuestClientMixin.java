@@ -3,6 +3,7 @@ package com.sxilverr.ftbquestsentityvis.mixin;
 import com.sxilverr.ftbquestsentityvis.client.QuestSizeWrappedIcon;
 import com.sxilverr.ftbquestsentityvis.duck.IKillTaskVisOptions;
 import com.sxilverr.ftbquestsentityvis.duck.IQuestVisOptions;
+import com.sxilverr.ftbquestsentityvis.duck.ITaskIconVisOptions;
 import dev.ftb.mods.ftblibrary.icon.Icon;
 import dev.ftb.mods.ftblibrary.icon.IconAnimation;
 import dev.ftb.mods.ftbquests.quest.Quest;
@@ -23,6 +24,10 @@ public abstract class QuestClientMixin {
         List<Icon> selected = new ArrayList<>();
         for (Task task : self.getTasksAsList()) {
             if (task instanceof IKillTaskVisOptions opts && opts.ftbquestsentityvis$getUseAsQuestIcon()) {
+                selected.add(task.getIcon());
+            } else if (task instanceof ITaskIconVisOptions opts
+                    && opts.ftbquestsentityvis$getIconEntityEnabled()
+                    && opts.ftbquestsentityvis$getIconUseAsQuestIcon()) {
                 selected.add(task.getIcon());
             }
         }

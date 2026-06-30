@@ -5,7 +5,6 @@ import com.sxilverr.ftbquestsentityvis.client.EntityIcon;
 import com.sxilverr.ftbquestsentityvis.duck.IKillTaskTagOption;
 import com.sxilverr.ftbquestsentityvis.duck.IKillTaskVisOptions;
 import com.sxilverr.ftbquestsentityvis.duck.OverrideMode;
-import com.sxilverr.ftbquestsentityvis.duck.SilhouetteMode;
 import dev.ftb.mods.ftblibrary.config.ConfigGroup;
 import dev.ftb.mods.ftblibrary.config.NameMap;
 import dev.ftb.mods.ftblibrary.icon.Icon;
@@ -71,53 +70,10 @@ public abstract class KillTaskClientMixin {
     }
 
     @Inject(method = "fillConfigGroup", at = @At("TAIL"), remap = false)
-    private void ftbquestsentityvis$addVisConfig(ConfigGroup config, CallbackInfo ci) {
-        IKillTaskVisOptions opts = (IKillTaskVisOptions) this;
+    private void ftbquestsentityvis$addUseTagConfig(ConfigGroup config, CallbackInfo ci) {
         IKillTaskTagOption tagOpts = (IKillTaskTagOption) this;
         config.addBool("entity_use_tag", tagOpts.ftbquestsentityvis$getUseTag(),
                 tagOpts::ftbquestsentityvis$setUseTag, false);
-        config.addDouble("entity_vis_size", opts.ftbquestsentityvis$getVisSize(),
-                v -> opts.ftbquestsentityvis$setVisSize(v.floatValue()),
-                1.0D, 0.0D, 10.0D);
-        config.addDouble("entity_vis_offset_x", opts.ftbquestsentityvis$getVisOffsetX(),
-                v -> opts.ftbquestsentityvis$setVisOffsetX(v.floatValue()),
-                0.0D, -2.0D, 2.0D);
-        config.addDouble("entity_vis_offset_y", opts.ftbquestsentityvis$getVisOffsetY(),
-                v -> opts.ftbquestsentityvis$setVisOffsetY(v.floatValue()),
-                0.0D, -2.0D, 2.0D);
-        config.addDouble("entity_vis_rotation", opts.ftbquestsentityvis$getVisRotation(),
-                v -> opts.ftbquestsentityvis$setVisRotation(v.floatValue()),
-                0.0D, -180.0D, 180.0D);
-        config.addEnum("entity_vis_spin_mode", opts.ftbquestsentityvis$getSpinMode(),
-                opts::ftbquestsentityvis$setSpinMode,
-                ftbquestsentityvis$overrideNameMap("entity_vis_spin_mode"),
-                OverrideMode.USE_GLOBAL);
-        config.addEnum("entity_vis_idle_mode", opts.ftbquestsentityvis$getIdleMode(),
-                opts::ftbquestsentityvis$setIdleMode,
-                ftbquestsentityvis$overrideNameMap("entity_vis_idle_mode"),
-                OverrideMode.USE_GLOBAL);
-        config.addEnum("entity_vis_walk_mode", opts.ftbquestsentityvis$getWalkMode(),
-                opts::ftbquestsentityvis$setWalkMode,
-                ftbquestsentityvis$overrideNameMap("entity_vis_walk_mode"),
-                OverrideMode.USE_GLOBAL);
-        config.addEnum("entity_vis_silhouette_mode", opts.ftbquestsentityvis$getSilhouetteMode(),
-                opts::ftbquestsentityvis$setSilhouetteMode,
-                ftbquestsentityvis$silhouetteNameMap(),
-                SilhouetteMode.NONE);
-        config.addBool("entity_vis_use_as_quest_icon", opts.ftbquestsentityvis$getUseAsQuestIcon(),
-                opts::ftbquestsentityvis$setUseAsQuestIcon, false);
-    }
-
-    private static NameMap<OverrideMode> ftbquestsentityvis$overrideNameMap(String key) {
-        return NameMap.of(OverrideMode.USE_GLOBAL, OverrideMode.values())
-                .nameKey(v -> "ftbquests.task.ftbquests.kill." + key + "." + v.name().toLowerCase())
-                .create();
-    }
-
-    private static NameMap<SilhouetteMode> ftbquestsentityvis$silhouetteNameMap() {
-        return NameMap.of(SilhouetteMode.NONE, SilhouetteMode.values())
-                .nameKey(v -> "ftbquests.task.ftbquests.kill.entity_vis_silhouette_mode." + v.name().toLowerCase())
-                .create();
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})

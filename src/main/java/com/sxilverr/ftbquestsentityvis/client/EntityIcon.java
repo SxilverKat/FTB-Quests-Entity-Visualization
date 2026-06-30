@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import org.joml.Matrix4f;
 import com.sxilverr.ftbquestsentityvis.Config;
 import com.sxilverr.ftbquestsentityvis.duck.OverrideMode;
 import dev.ftb.mods.ftblibrary.icon.Icon;
@@ -174,7 +175,15 @@ public class EntityIcon extends Icon {
         PoseStack pose = graphics.pose();
         pose.pushPose();
         pose.translate(cx, cy, 64.0);
-        pose.scale(scale, scale, -scale);
+        Matrix4f poseMatrix = pose.last().pose();
+        float axisX = (float) Math.sqrt(poseMatrix.m00() * poseMatrix.m00()
+                + poseMatrix.m10() * poseMatrix.m10()
+                + poseMatrix.m20() * poseMatrix.m20());
+        float axisZ = (float) Math.sqrt(poseMatrix.m02() * poseMatrix.m02()
+                + poseMatrix.m12() * poseMatrix.m12()
+                + poseMatrix.m22() * poseMatrix.m22());
+        float depthFix = axisZ > 1.0E-5F ? axisX / axisZ : 1.0F;
+        pose.scale(scale, scale, -scale * depthFix);
         pose.mulPose(Axis.XP.rotationDegrees(180.0F + tilt));
         pose.mulPose(Axis.YP.rotationDegrees(yaw));
 
@@ -198,20 +207,19 @@ public class EntityIcon extends Icon {
         boolean silhouette = silhouetteCheck != null && silhouetteCheck.getAsBoolean();
         int packedLight = silhouette || Config.FULL_BRIGHT.get() ? LightTexture.FULL_BRIGHT : 15728640;
 
+        float[] prevShaderColor = RenderSystem.getShaderColor().clone();
+
         Lighting.setupForEntityInInventory();
         EntityRenderDispatcher dispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
         dispatcher.setRenderShadow(false);
         try {
-            if (silhouette) {
-                RenderSystem.setShaderColor(0.0F, 0.0F, 0.0F, 1.0F);
-            }
+            float channel = silhouette ? 0.0F : 1.0F;
+            RenderSystem.setShaderColor(channel, channel, channel, 1.0F);
             RenderSystem.runAsFancy(() -> dispatcher.render(entity, 0.0D, 0.0D, 0.0D, 0.0F, 1.0F, pose, graphics.bufferSource(), packedLight));
             graphics.flush();
         } catch (Throwable ignored) {
         } finally {
-            if (silhouette) {
-                RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-            }
+            RenderSystem.setShaderColor(prevShaderColor[0], prevShaderColor[1], prevShaderColor[2], prevShaderColor[3]);
             dispatcher.setRenderShadow(true);
             pose.popPose();
             Lighting.setupFor3DItems();
