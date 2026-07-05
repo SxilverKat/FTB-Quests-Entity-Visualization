@@ -1,0 +1,29 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.sxilverr.ftbquestsentityvis.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "ChapterImageMixin",
+    "InteractionTaskMixin",
+    "KillTaskMixin",
+    "ObservationTaskMixin",
+    "QuestMixin",
+    "TaskMixin"
+  ],
+  "client": [
+    "ChapterImageClientMixin",
+    "ContextMenuBuilderMixin",
+    "InteractionTaskClientMixin",
+    "KillTaskClientMixin",
+    "ObservationTaskClientMixin",
+    "QuestClientMixin",
+    "QuestObjectBaseClientMixin",
+    "QuestPanelMixin",
+    "QuestScreenAccessor",
+    "ViewQuestPanelMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

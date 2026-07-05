@@ -1,0 +1,30 @@
+modLoader = "javafml"
+loaderVersion = "*"
+license = "MIT"
+issueTrackerURL = "https://www.curseforge.com/minecraft/mc-mods/ftb-quests-entity-visualization"
+
+[[mods]]
+modId = "${id}"
+version = "${version}"
+displayName = "${name}"
+displayURL = "https://www.curseforge.com/minecraft/mc-mods/ftb-quests-entity-visualization"
+authors = "Sxilverr"
+description = "Adds entity visualization to FTB Quests."
+logoFile = "assets/${id}/icon.png"
+
+[[mixins]]
+config = "ftbquestsentityvis.mixins.json"
+
+[[dependencies.${id}]]
+modId = "neoforge"
+type = "required"
+versionRange = "*"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.${id}]]
+modId = "minecraft"
+type = "required"
+versionRange = "${minecraft}"
+ordering = "NONE"
+side = "BOTH"
