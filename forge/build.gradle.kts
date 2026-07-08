@@ -14,7 +14,7 @@ val common: Project = requireNotNull(stonecutter.node.sibling("")?.project) {
 
 version = "${mod.version}-$minecraft-$loader"
 base {
-    archivesName.set("ftb-quests-entity-vis")
+    archivesName.set(mod.id)
 }
 architectury {
     platformSetupLoomIde()
@@ -94,7 +94,8 @@ tasks.processResources {
         "id" to mod.id,
         "name" to mod.name,
         "version" to mod.version,
-        "minecraft" to common.mod.prop("mc_dep_forgelike")
+        "minecraft" to common.mod.prop("mc_dep_forgelike"),
+        "pack_format" to common.mod.prop("pack_format")
     )
 }
 

@@ -14,7 +14,7 @@ public final class FTBQuestsEntityVisualizationForge {
         FTBQuestsEntityVisualization.init();
         IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();
         modBus.addListener(this::onConfig);
-        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ForgeClientConfig.SPEC, "ftb-quests-entity-vis/client.toml");
+        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ForgeClientConfig.SPEC, FTBQuestsEntityVisualization.MODID + "/client.toml");
     }
 
     private void onConfig(ModConfigEvent event) {
