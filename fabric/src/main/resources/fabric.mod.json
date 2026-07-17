@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "id": "${id}",
+  "version": "${version}",
+  "name": "${name}",
+  "description": "Adds entity visualization to FTB Quests.",
+  "authors": [
+    "Sxilverr"
+  ],
+  "contact": {
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/ftb-quests-entity-visualization",
+    "issues": "https://www.curseforge.com/minecraft/mc-mods/ftb-quests-entity-visualization"
+  },
+  "license": "MIT",
+  "icon": "assets/${id}/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.sxilverr.ftbquestsentityvis.fabric.FTBQuestsEntityVisualizationFabric"
+    ],
+    "client": [
+      "com.sxilverr.ftbquestsentityvis.fabric.client.FTBQuestsEntityVisualizationFabricClient"
+    ],
+    "modmenu": [
+      "com.sxilverr.ftbquestsentityvis.fabric.client.FabricModMenuIntegration"
+    ]
+  },
+  "mixins": [
+    "ftbquestsentityvis.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.16",
+    "minecraft": "${minecraft}",
+    "java": ">=17",
+    "architectury": "*",
+    "ftblibrary": "*",
+    "ftbquests": "*",
+    "cloth-config2": "*"
+  },
+  "suggests": {
+    "modmenu": "*",
+    "questsadditions": "*"
+  }
+}

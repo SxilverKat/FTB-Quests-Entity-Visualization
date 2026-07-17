@@ -37,5 +37,15 @@
   "ftbquestsentityvis.config.align": "Alignment",
   "ftbquestsentityvis.config.order": "Draw Order",
   "ftbquestsentityvis.config.dev": "Editors Only",
-  "ftbquestsentityvis.config.hover": "Hover Text"
+  "ftbquestsentityvis.config.hover": "Hover Text",
+
+  "text.autoconfig.ftbquestsentityvis.title": "FTB Quests Entity Visualization",
+  "text.autoconfig.ftbquestsentityvis.option.mobsSpin": "Mobs Spin",
+  "text.autoconfig.ftbquestsentityvis.option.spinSpeed": "Spin Speed",
+  "text.autoconfig.ftbquestsentityvis.option.spinSpeed.@Tooltip": "Spin speed multiplier.",
+  "text.autoconfig.ftbquestsentityvis.option.tiltDegrees": "Tilt Degrees",
+  "text.autoconfig.ftbquestsentityvis.option.tiltDegrees.@Tooltip": "Camera tilt in degrees.",
+  "text.autoconfig.ftbquestsentityvis.option.fullBright": "Full Bright",
+  "text.autoconfig.ftbquestsentityvis.option.idleAnimation": "Idle Animation",
+  "text.autoconfig.ftbquestsentityvis.option.walkAnimation": "Walk Animation"
 }
