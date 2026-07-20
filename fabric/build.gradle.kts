@@ -42,7 +42,7 @@ repositories {
     maven("https://maven.architectury.dev")
     maven("https://maven.ftb.dev/releases")
     maven("https://maven.shedaniel.me/")
-    maven("https://maven.terraformersmc.com/releases/")
+    maven("https://api.modrinth.com/maven")
 }
 
 dependencies {
@@ -58,7 +58,7 @@ dependencies {
     modImplementation("me.shedaniel.cloth:cloth-config-fabric:${common.mod.dep("cloth_config")}") {
         exclude(group = "net.fabricmc.fabric-api")
     }
-    modImplementation("com.terraformersmc:modmenu:${common.mod.dep("mod_menu")}") { isTransitive = false }
+    modImplementation("maven.modrinth:modmenu:${common.mod.dep("mod_menu")}") { isTransitive = false }
 
     commonBundle(project(common.path, "namedElements")) { isTransitive = false }
     shadowBundle(project(common.path, "transformProductionFabric")) { isTransitive = false }
