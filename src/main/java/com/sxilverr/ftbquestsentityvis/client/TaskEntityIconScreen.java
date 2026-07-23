@@ -41,6 +41,7 @@ public final class TaskEntityIconScreen {
         holder.walkMode = opts.ftbquestsentityvis$getIconWalkMode();
         holder.silhouetteMode = opts.ftbquestsentityvis$getIconSilhouetteMode();
         holder.useAsQuestIcon = opts.ftbquestsentityvis$getIconUseAsQuestIcon();
+        holder.nbt = opts.ftbquestsentityvis$getIconNbt();
         openEditor(questScreen, task, holder, () -> {
             opts.ftbquestsentityvis$setIconEntityId(holder.entityId);
             opts.ftbquestsentityvis$setIconVisSize(holder.size);
@@ -52,6 +53,7 @@ public final class TaskEntityIconScreen {
             opts.ftbquestsentityvis$setIconWalkMode(holder.walkMode);
             opts.ftbquestsentityvis$setIconSilhouetteMode(holder.silhouetteMode);
             opts.ftbquestsentityvis$setIconUseAsQuestIcon(holder.useAsQuestIcon);
+            opts.ftbquestsentityvis$setIconNbt(holder.nbt);
             opts.ftbquestsentityvis$setIconEntityEnabled(true);
             opts.ftbquestsentityvis$setIconDirty(true);
         });
@@ -83,6 +85,8 @@ public final class TaskEntityIconScreen {
         holder.walkMode = opts.ftbquestsentityvis$getWalkMode();
         holder.silhouetteMode = opts.ftbquestsentityvis$getSilhouetteMode();
         holder.useAsQuestIcon = opts.ftbquestsentityvis$getUseAsQuestIcon();
+        holder.nbt = opts.ftbquestsentityvis$getVisNbt();
+        holder.entityId = opts.ftbquestsentityvis$getVisEntityId();
         openEditor(questScreen, task, holder, () -> {
             opts.ftbquestsentityvis$setVisSize(holder.size);
             opts.ftbquestsentityvis$setVisOffsetX(holder.offsetX);
@@ -93,6 +97,7 @@ public final class TaskEntityIconScreen {
             opts.ftbquestsentityvis$setWalkMode(holder.walkMode);
             opts.ftbquestsentityvis$setSilhouetteMode(holder.silhouetteMode);
             opts.ftbquestsentityvis$setUseAsQuestIcon(holder.useAsQuestIcon);
+            opts.ftbquestsentityvis$setVisNbt(holder.nbt);
         });
     }
 
@@ -137,6 +142,7 @@ public final class TaskEntityIconScreen {
         private OverrideMode walkMode = OverrideMode.USE_GLOBAL;
         private SilhouetteMode silhouetteMode = SilhouetteMode.NONE;
         private boolean useAsQuestIcon = false;
+        private String nbt = "";
 
         private void fillConfig(ConfigGroup config) {
             if (hasEntityPicker) {
@@ -149,6 +155,8 @@ public final class TaskEntityIconScreen {
                                         .create(), DEFAULT_ENTITY)
                         .setNameKey("ftbquestsentityvis.config.entity");
             }
+
+            EntityVariants.addNbtControls(config, entityId, nbt, v -> nbt = v);
 
             config.addDouble("size", size, v -> size = v.floatValue(), 1.0D, 0.0D, 10.0D)
                     .setNameKey("ftbquestsentityvis.config.size");

@@ -85,7 +85,8 @@ public abstract class ObservationTaskClientMixin {
                         opts.ftbquestsentityvis$getSpinMode(),
                         opts.ftbquestsentityvis$getIdleMode(),
                         opts.ftbquestsentityvis$getWalkMode(),
-                        silhouette
+                        silhouette,
+                        opts.ftbquestsentityvis$getVisNbt()
                 );
             }
         }

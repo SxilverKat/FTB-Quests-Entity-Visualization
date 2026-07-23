@@ -12,6 +12,8 @@ import dev.ftb.mods.ftblibrary.icon.Icon;
 import dev.ftb.mods.ftblibrary.icon.ItemIcon;
 import dev.ftb.mods.ftblibrary.ui.GuiHelper;
 import net.minecraft.client.Minecraft;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.TagParser;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
@@ -43,6 +45,7 @@ public class EntityIcon extends Icon {
     private final OverrideMode idleMode;
     private final OverrideMode walkMode;
     private final BooleanSupplier silhouetteCheck;
+    private final String nbt;
 
     private Entity cachedEntity;
     private Level cachedLevel;
@@ -51,12 +54,18 @@ public class EntityIcon extends Icon {
 
     public EntityIcon(ResourceLocation entityId, float sizeMultiplier, float offsetX, float offsetY,
                       float rotationOffset, OverrideMode spinMode, OverrideMode idleMode, OverrideMode walkMode) {
-        this(entityId, sizeMultiplier, offsetX, offsetY, rotationOffset, spinMode, idleMode, walkMode, null);
+        this(entityId, sizeMultiplier, offsetX, offsetY, rotationOffset, spinMode, idleMode, walkMode, null, "");
     }
 
     public EntityIcon(ResourceLocation entityId, float sizeMultiplier, float offsetX, float offsetY,
                       float rotationOffset, OverrideMode spinMode, OverrideMode idleMode, OverrideMode walkMode,
                       BooleanSupplier silhouetteCheck) {
+        this(entityId, sizeMultiplier, offsetX, offsetY, rotationOffset, spinMode, idleMode, walkMode, silhouetteCheck, "");
+    }
+
+    public EntityIcon(ResourceLocation entityId, float sizeMultiplier, float offsetX, float offsetY,
+                      float rotationOffset, OverrideMode spinMode, OverrideMode idleMode, OverrideMode walkMode,
+                      BooleanSupplier silhouetteCheck, String nbt) {
         this.entityId = entityId;
         this.sizeMultiplier = sizeMultiplier;
         this.offsetX = offsetX;
@@ -66,6 +75,7 @@ public class EntityIcon extends Icon {
         this.idleMode = idleMode;
         this.walkMode = walkMode;
         this.silhouetteCheck = silhouetteCheck;
+        this.nbt = nbt == null ? "" : nbt.trim();
     }
 
     private Entity getEntity() {
@@ -94,6 +104,7 @@ public class EntityIcon extends Icon {
         try {
             Entity created = type.create(level);
             if (created != null) {
+                applyNbt(created);
                 cachedEntity = created;
                 return created;
             }
@@ -101,6 +112,19 @@ public class EntityIcon extends Icon {
         }
         creationFailed = true;
         return null;
+    }
+
+    private void applyNbt(Entity entity) {
+        if (nbt.isEmpty()) {
+            return;
+        }
+        try {
+            CompoundTag tag = TagParser.parseTag(nbt);
+            entity.load(tag);
+            entity.setPos(0.0D, 0.0D, 0.0D);
+            entity.setDeltaMovement(0.0D, 0.0D, 0.0D);
+        } catch (Throwable ignored) {
+        }
     }
 
     private Icon fallbackIcon() {
@@ -263,12 +287,13 @@ public class EntityIcon extends Icon {
                 && Float.compare(other.rotationOffset, rotationOffset) == 0
                 && other.spinMode == spinMode
                 && other.idleMode == idleMode
-                && other.walkMode == walkMode;
+                && other.walkMode == walkMode
+                && other.nbt.equals(nbt);
     }
 
     @Override
     public String toString() {
-        return "entity:" + entityId;
+        return "entity:" + entityId + (nbt.isEmpty() ? "" : nbt);
     }
 
     @Override
@@ -281,6 +306,7 @@ public class EntityIcon extends Icon {
         h = h * 31 + spinMode.ordinal();
         h = h * 31 + idleMode.ordinal();
         h = h * 31 + walkMode.ordinal();
+        h = h * 31 + nbt.hashCode();
         return h;
     }
 }

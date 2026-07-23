@@ -11,7 +11,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
@@ -28,6 +30,7 @@ public class EntityComponent extends ImageComponent {
     public OverrideMode idleMode = OverrideMode.USE_GLOBAL;
     public OverrideMode walkMode = OverrideMode.USE_GLOBAL;
     public boolean silhouette = false;
+    public String nbt = "";
 
     public EntityComponent() {
         setCompWidth(100);
@@ -49,6 +52,7 @@ public class EntityComponent extends ImageComponent {
         c.idleMode = OverrideMode.fromName(map.getOrDefault("idle", "USE_GLOBAL"));
         c.walkMode = OverrideMode.fromName(map.getOrDefault("walk", "USE_GLOBAL"));
         c.silhouette = "true".equals(map.get("silhouette"));
+        c.nbt = decodeNbt(map.get("nbt"));
         c.setCompWidth(parseInt(map.get("width"), 100));
         c.setCompHeight(parseInt(map.get("height"), 100));
         c.setCompAlign(alignByName(map.getOrDefault("align", "center")));
@@ -58,7 +62,7 @@ public class EntityComponent extends ImageComponent {
 
     public void rebuildIcon() {
         setCompImage(new EntityIcon(entityId, size, offsetX, offsetY, rotation,
-                spinMode, idleMode, walkMode, silhouette ? () -> true : null));
+                spinMode, idleMode, walkMode, silhouette ? () -> true : null, nbt));
     }
 
     public void fillConfig(ConfigGroup config) {
@@ -70,6 +74,8 @@ public class EntityComponent extends ImageComponent {
                                         OverrideMode.USE_GLOBAL, OverrideMode.USE_GLOBAL, OverrideMode.USE_GLOBAL))
                                 .create(), DEFAULT_ENTITY)
                 .setNameKey("ftbquestsentityvis.config.entity");
+
+        EntityVariants.addNbtControls(config, entityId, nbt, v -> nbt = v);
 
         config.addDouble("size", size, v -> size = v.floatValue(), 1.0D, 0.0D, 10.0D)
                 .setNameKey("ftbquestsentityvis.config.size");
@@ -114,6 +120,9 @@ public class EntityComponent extends ImageComponent {
         sb.append(" align:").append(alignName());
         if (silhouette) {
             sb.append(" silhouette:true");
+        }
+        if (!nbt.isEmpty()) {
+            sb.append(" nbt:").append(encodeNbt(nbt));
         }
         sb.append('}');
         return sb.toString();
@@ -195,6 +204,21 @@ public class EntityComponent extends ImageComponent {
         return NameMap.of(OverrideMode.USE_GLOBAL, OverrideMode.values())
                 .nameKey(v -> "ftbquestsentityvis.config." + key + "." + v.name().toLowerCase())
                 .create();
+    }
+
+    private static String encodeNbt(String value) {
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(value.getBytes(StandardCharsets.UTF_8));
+    }
+
+    private static String decodeNbt(String encoded) {
+        if (encoded == null || encoded.isEmpty()) {
+            return "";
+        }
+        try {
+            return new String(Base64.getUrlDecoder().decode(encoded), StandardCharsets.UTF_8);
+        } catch (IllegalArgumentException e) {
+            return encoded;
+        }
     }
 
     private static float parseFloat(String s, float def) {

@@ -27,6 +27,7 @@ public abstract class TaskMixin implements ITaskIconVisOptions {
     @Unique private static final String ftbquestsentityvis$KEY_WALK_MODE = "walk_mode";
     @Unique private static final String ftbquestsentityvis$KEY_SILHOUETTE_MODE = "silhouette_mode";
     @Unique private static final String ftbquestsentityvis$KEY_USE_AS_QUEST_ICON = "use_as_quest_icon";
+    @Unique private static final String ftbquestsentityvis$KEY_NBT = "nbt";
 
     @Unique private boolean ftbquestsentityvis$iconEnabled = false;
     @Unique private ResourceLocation ftbquestsentityvis$iconEntity = null;
@@ -39,6 +40,7 @@ public abstract class TaskMixin implements ITaskIconVisOptions {
     @Unique private OverrideMode ftbquestsentityvis$iconWalkMode = OverrideMode.USE_GLOBAL;
     @Unique private SilhouetteMode ftbquestsentityvis$iconSilhouetteMode = SilhouetteMode.NONE;
     @Unique private boolean ftbquestsentityvis$iconUseAsQuestIcon = false;
+    @Unique private String ftbquestsentityvis$iconNbt = "";
     @Unique private boolean ftbquestsentityvis$iconDirty = false;
 
     @Override public boolean ftbquestsentityvis$getIconEntityEnabled() { return ftbquestsentityvis$iconEnabled; }
@@ -71,6 +73,9 @@ public abstract class TaskMixin implements ITaskIconVisOptions {
     @Override public SilhouetteMode ftbquestsentityvis$getIconSilhouetteMode() { return ftbquestsentityvis$iconSilhouetteMode; }
     @Override public void ftbquestsentityvis$setIconSilhouetteMode(SilhouetteMode mode) { this.ftbquestsentityvis$iconSilhouetteMode = mode; this.ftbquestsentityvis$iconDirty = true; }
 
+    @Override public String ftbquestsentityvis$getIconNbt() { return ftbquestsentityvis$iconNbt; }
+    @Override public void ftbquestsentityvis$setIconNbt(String nbt) { this.ftbquestsentityvis$iconNbt = nbt == null ? "" : nbt; this.ftbquestsentityvis$iconDirty = true; }
+
     @Override public boolean ftbquestsentityvis$getIconUseAsQuestIcon() { return ftbquestsentityvis$iconUseAsQuestIcon; }
     @Override public void ftbquestsentityvis$setIconUseAsQuestIcon(boolean useAsQuestIcon) { this.ftbquestsentityvis$iconUseAsQuestIcon = useAsQuestIcon; this.ftbquestsentityvis$iconDirty = true; }
 
@@ -100,6 +105,9 @@ public abstract class TaskMixin implements ITaskIconVisOptions {
         tag.putString(ftbquestsentityvis$KEY_WALK_MODE, ftbquestsentityvis$iconWalkMode.name());
         tag.putString(ftbquestsentityvis$KEY_SILHOUETTE_MODE, ftbquestsentityvis$iconSilhouetteMode.name());
         tag.putBoolean(ftbquestsentityvis$KEY_USE_AS_QUEST_ICON, ftbquestsentityvis$iconUseAsQuestIcon);
+        if (!ftbquestsentityvis$iconNbt.isEmpty()) {
+            tag.putString(ftbquestsentityvis$KEY_NBT, ftbquestsentityvis$iconNbt);
+        }
         nbt.put(ftbquestsentityvis$KEY_ROOT, tag);
     }
 
@@ -128,6 +136,7 @@ public abstract class TaskMixin implements ITaskIconVisOptions {
         ftbquestsentityvis$iconWalkMode = OverrideMode.fromName(tag.getString(ftbquestsentityvis$KEY_WALK_MODE));
         ftbquestsentityvis$iconSilhouetteMode = SilhouetteMode.fromName(tag.getString(ftbquestsentityvis$KEY_SILHOUETTE_MODE));
         ftbquestsentityvis$iconUseAsQuestIcon = tag.getBoolean(ftbquestsentityvis$KEY_USE_AS_QUEST_ICON);
+        ftbquestsentityvis$iconNbt = tag.contains(ftbquestsentityvis$KEY_NBT) ? tag.getString(ftbquestsentityvis$KEY_NBT) : "";
         ftbquestsentityvis$iconDirty = true;
     }
 
@@ -152,6 +161,7 @@ public abstract class TaskMixin implements ITaskIconVisOptions {
         buf.writeUtf(ftbquestsentityvis$iconWalkMode.name());
         buf.writeUtf(ftbquestsentityvis$iconSilhouetteMode.name());
         buf.writeBoolean(ftbquestsentityvis$iconUseAsQuestIcon);
+        buf.writeUtf(ftbquestsentityvis$iconNbt, Short.MAX_VALUE);
     }
 
     @Inject(method = "readNetData", at = @At("TAIL"), remap = false)
@@ -171,6 +181,7 @@ public abstract class TaskMixin implements ITaskIconVisOptions {
         ftbquestsentityvis$iconWalkMode = OverrideMode.fromName(buf.readUtf());
         ftbquestsentityvis$iconSilhouetteMode = SilhouetteMode.fromName(buf.readUtf());
         ftbquestsentityvis$iconUseAsQuestIcon = buf.readBoolean();
+        ftbquestsentityvis$iconNbt = buf.readUtf(Short.MAX_VALUE);
         ftbquestsentityvis$iconDirty = true;
     }
 }

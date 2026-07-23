@@ -43,6 +43,10 @@ public interface IEntityImageVisOptions {
 
     void ftbquestsentityvis$setSilhouette(boolean silhouette);
 
+    String ftbquestsentityvis$getNbt();
+
+    void ftbquestsentityvis$setNbt(String nbt);
+
     boolean ftbquestsentityvis$isIconDirty();
 
     void ftbquestsentityvis$setIconDirty(boolean dirty);

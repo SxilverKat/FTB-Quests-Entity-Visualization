@@ -2,6 +2,7 @@ package com.sxilverr.ftbquestsentityvis.mixin;
 import com.sxilverr.ftbquestsentityvis.ModUtil;
 
 import com.sxilverr.ftbquestsentityvis.client.EntityIcon;
+import com.sxilverr.ftbquestsentityvis.client.EntityVariants;
 import com.sxilverr.ftbquestsentityvis.duck.IEntityImageVisOptions;
 import com.sxilverr.ftbquestsentityvis.duck.OverrideMode;
 import dev.ftb.mods.ftblibrary.config.ConfigGroup;
@@ -54,7 +55,8 @@ public abstract class ChapterImageClientMixin {
                     opts.ftbquestsentityvis$getSpinMode(),
                     opts.ftbquestsentityvis$getIdleMode(),
                     opts.ftbquestsentityvis$getWalkMode(),
-                    silhouette
+                    silhouette,
+                    opts.ftbquestsentityvis$getNbt()
             );
             opts.ftbquestsentityvis$setIconDirty(false);
         }
@@ -91,6 +93,9 @@ public abstract class ChapterImageClientMixin {
                                         OverrideMode.USE_GLOBAL, OverrideMode.USE_GLOBAL, OverrideMode.USE_GLOBAL))
                                 .create(), ftbquestsentityvis$DEFAULT_ENTITY)
                 .setNameKey("ftbquestsentityvis.config.entity");
+
+        EntityVariants.addNbtControls(config, opts.ftbquestsentityvis$getEntityId(),
+                opts.ftbquestsentityvis$getNbt(), opts::ftbquestsentityvis$setNbt);
 
         config.addDouble("size", opts.ftbquestsentityvis$getVisSize(),
                         v -> opts.ftbquestsentityvis$setVisSize(v.floatValue()), 1.0D, 0.0D, 10.0D)

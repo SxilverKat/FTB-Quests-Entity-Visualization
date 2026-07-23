@@ -43,7 +43,8 @@ public abstract class QuestObjectBaseClientMixin {
                     opts.ftbquestsentityvis$getIconSpinMode(),
                     opts.ftbquestsentityvis$getIconIdleMode(),
                     opts.ftbquestsentityvis$getIconWalkMode(),
-                    silhouette
+                    silhouette,
+                    opts.ftbquestsentityvis$getIconNbt()
             );
             opts.ftbquestsentityvis$setIconDirty(false);
         }

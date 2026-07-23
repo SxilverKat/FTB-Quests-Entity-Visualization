@@ -57,7 +57,8 @@ public abstract class KillTaskClientMixin {
                 opts.ftbquestsentityvis$getSpinMode(),
                 opts.ftbquestsentityvis$getIdleMode(),
                 opts.ftbquestsentityvis$getWalkMode(),
-                ClientStateUtil.silhouetteCheck(self, opts.ftbquestsentityvis$getSilhouetteMode())
+                ClientStateUtil.silhouetteCheck(self, opts.ftbquestsentityvis$getSilhouetteMode()),
+                opts.ftbquestsentityvis$getVisNbt()
         ));
     }
 

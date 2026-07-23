@@ -43,6 +43,10 @@ public interface ITaskIconVisOptions {
 
     void ftbquestsentityvis$setIconSilhouetteMode(SilhouetteMode mode);
 
+    String ftbquestsentityvis$getIconNbt();
+
+    void ftbquestsentityvis$setIconNbt(String nbt);
+
     boolean ftbquestsentityvis$getIconUseAsQuestIcon();
 
     void ftbquestsentityvis$setIconUseAsQuestIcon(boolean useAsQuestIcon);

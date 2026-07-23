@@ -28,6 +28,7 @@ public abstract class ChapterImageMixin implements IEntityImageVisOptions {
     @Unique private static final String ftbquestsentityvis$KEY_IDLE_MODE = "entity_vis_idle_mode";
     @Unique private static final String ftbquestsentityvis$KEY_WALK_MODE = "entity_vis_walk_mode";
     @Unique private static final String ftbquestsentityvis$KEY_SILHOUETTE = "entity_vis_silhouette";
+    @Unique private static final String ftbquestsentityvis$KEY_NBT = "entity_vis_nbt";
 
     @Unique private boolean ftbquestsentityvis$entityVis = false;
     @Unique private ResourceLocation ftbquestsentityvis$entityId = ftbquestsentityvis$DEFAULT_ENTITY;
@@ -39,6 +40,7 @@ public abstract class ChapterImageMixin implements IEntityImageVisOptions {
     @Unique private OverrideMode ftbquestsentityvis$idleMode = OverrideMode.USE_GLOBAL;
     @Unique private OverrideMode ftbquestsentityvis$walkMode = OverrideMode.USE_GLOBAL;
     @Unique private boolean ftbquestsentityvis$silhouette = false;
+    @Unique private String ftbquestsentityvis$nbt = "";
     @Unique private boolean ftbquestsentityvis$iconDirty = true;
 
     @Override public boolean ftbquestsentityvis$isEntityVis() { return ftbquestsentityvis$entityVis; }
@@ -71,6 +73,9 @@ public abstract class ChapterImageMixin implements IEntityImageVisOptions {
     @Override public boolean ftbquestsentityvis$isSilhouette() { return ftbquestsentityvis$silhouette; }
     @Override public void ftbquestsentityvis$setSilhouette(boolean silhouette) { this.ftbquestsentityvis$silhouette = silhouette; this.ftbquestsentityvis$iconDirty = true; }
 
+    @Override public String ftbquestsentityvis$getNbt() { return ftbquestsentityvis$nbt; }
+    @Override public void ftbquestsentityvis$setNbt(String nbt) { this.ftbquestsentityvis$nbt = nbt == null ? "" : nbt; this.ftbquestsentityvis$iconDirty = true; }
+
     @Override public boolean ftbquestsentityvis$isIconDirty() { return ftbquestsentityvis$iconDirty; }
     @Override public void ftbquestsentityvis$setIconDirty(boolean dirty) { this.ftbquestsentityvis$iconDirty = dirty; }
 
@@ -89,6 +94,9 @@ public abstract class ChapterImageMixin implements IEntityImageVisOptions {
         nbt.putString(ftbquestsentityvis$KEY_IDLE_MODE, ftbquestsentityvis$idleMode.name());
         nbt.putString(ftbquestsentityvis$KEY_WALK_MODE, ftbquestsentityvis$walkMode.name());
         nbt.putBoolean(ftbquestsentityvis$KEY_SILHOUETTE, ftbquestsentityvis$silhouette);
+        if (!ftbquestsentityvis$nbt.isEmpty()) {
+            nbt.putString(ftbquestsentityvis$KEY_NBT, ftbquestsentityvis$nbt);
+        }
     }
 
     @Inject(method = "readData", at = @At("TAIL"), remap = false)
@@ -105,6 +113,7 @@ public abstract class ChapterImageMixin implements IEntityImageVisOptions {
             ftbquestsentityvis$idleMode = OverrideMode.fromName(nbt.getString(ftbquestsentityvis$KEY_IDLE_MODE));
             ftbquestsentityvis$walkMode = OverrideMode.fromName(nbt.getString(ftbquestsentityvis$KEY_WALK_MODE));
             ftbquestsentityvis$silhouette = nbt.getBoolean(ftbquestsentityvis$KEY_SILHOUETTE);
+            ftbquestsentityvis$nbt = nbt.contains(ftbquestsentityvis$KEY_NBT) ? nbt.getString(ftbquestsentityvis$KEY_NBT) : "";
         }
         ftbquestsentityvis$iconDirty = true;
     }
@@ -122,6 +131,7 @@ public abstract class ChapterImageMixin implements IEntityImageVisOptions {
             buf.writeUtf(ftbquestsentityvis$idleMode.name());
             buf.writeUtf(ftbquestsentityvis$walkMode.name());
             buf.writeBoolean(ftbquestsentityvis$silhouette);
+            buf.writeUtf(ftbquestsentityvis$nbt, Short.MAX_VALUE);
         }
     }
 
@@ -138,6 +148,7 @@ public abstract class ChapterImageMixin implements IEntityImageVisOptions {
             ftbquestsentityvis$idleMode = OverrideMode.fromName(buf.readUtf());
             ftbquestsentityvis$walkMode = OverrideMode.fromName(buf.readUtf());
             ftbquestsentityvis$silhouette = buf.readBoolean();
+            ftbquestsentityvis$nbt = buf.readUtf(Short.MAX_VALUE);
         }
         ftbquestsentityvis$iconDirty = true;
     }

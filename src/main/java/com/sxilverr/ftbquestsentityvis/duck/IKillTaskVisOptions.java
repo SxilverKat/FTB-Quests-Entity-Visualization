@@ -1,6 +1,16 @@
 package com.sxilverr.ftbquestsentityvis.duck;
 
+import net.minecraft.resources.ResourceLocation;
+
 public interface IKillTaskVisOptions {
+    String ftbquestsentityvis$getVisNbt();
+
+    void ftbquestsentityvis$setVisNbt(String nbt);
+
+    default ResourceLocation ftbquestsentityvis$getVisEntityId() {
+        return null;
+    }
+
     float ftbquestsentityvis$getVisSize();
 
     void ftbquestsentityvis$setVisSize(float size);

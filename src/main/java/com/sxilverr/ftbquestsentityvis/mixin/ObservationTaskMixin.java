@@ -6,7 +6,9 @@ import com.sxilverr.ftbquestsentityvis.duck.SilhouetteMode;
 import dev.ftb.mods.ftbquests.quest.task.ObservationTask;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -23,6 +25,9 @@ public abstract class ObservationTaskMixin implements IKillTaskVisOptions {
     @Unique private static final String ftbquestsentityvis$KEY_WALK_MODE = "entity_vis_walk_mode";
     @Unique private static final String ftbquestsentityvis$KEY_SILHOUETTE_MODE = "entity_vis_silhouette_mode";
     @Unique private static final String ftbquestsentityvis$KEY_USE_AS_QUEST_ICON = "entity_vis_use_as_quest_icon";
+    @Unique private static final String ftbquestsentityvis$KEY_NBT = "entity_vis_nbt";
+
+    @Shadow(remap = false) private String toObserve;
 
     @Unique private float ftbquestsentityvis$visSize = 1.0F;
     @Unique private float ftbquestsentityvis$visOffsetX = 0.0F;
@@ -33,6 +38,7 @@ public abstract class ObservationTaskMixin implements IKillTaskVisOptions {
     @Unique private OverrideMode ftbquestsentityvis$walkMode = OverrideMode.USE_GLOBAL;
     @Unique private SilhouetteMode ftbquestsentityvis$silhouetteMode = SilhouetteMode.NONE;
     @Unique private boolean ftbquestsentityvis$useAsQuestIcon = false;
+    @Unique private String ftbquestsentityvis$visNbt = "";
 
     @Override public float ftbquestsentityvis$getVisSize() { return ftbquestsentityvis$visSize; }
     @Override public void ftbquestsentityvis$setVisSize(float size) { this.ftbquestsentityvis$visSize = size; }
@@ -61,6 +67,17 @@ public abstract class ObservationTaskMixin implements IKillTaskVisOptions {
     @Override public boolean ftbquestsentityvis$getUseAsQuestIcon() { return ftbquestsentityvis$useAsQuestIcon; }
     @Override public void ftbquestsentityvis$setUseAsQuestIcon(boolean useAsQuestIcon) { this.ftbquestsentityvis$useAsQuestIcon = useAsQuestIcon; }
 
+    @Override public String ftbquestsentityvis$getVisNbt() { return ftbquestsentityvis$visNbt; }
+    @Override public void ftbquestsentityvis$setVisNbt(String nbt) { this.ftbquestsentityvis$visNbt = nbt == null ? "" : nbt; }
+
+    @Override
+    public ResourceLocation ftbquestsentityvis$getVisEntityId() {
+        if (toObserve == null || toObserve.isEmpty() || toObserve.startsWith("#")) {
+            return null;
+        }
+        return ResourceLocation.tryParse(toObserve);
+    }
+
     @Inject(method = "writeData", at = @At("TAIL"), remap = false)
     //? if >=1.21.1 {
     /*private void ftbquestsentityvis$writeData(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries, CallbackInfo ci) {*/
@@ -76,6 +93,9 @@ public abstract class ObservationTaskMixin implements IKillTaskVisOptions {
         nbt.putString(ftbquestsentityvis$KEY_WALK_MODE, ftbquestsentityvis$walkMode.name());
         nbt.putString(ftbquestsentityvis$KEY_SILHOUETTE_MODE, ftbquestsentityvis$silhouetteMode.name());
         nbt.putBoolean(ftbquestsentityvis$KEY_USE_AS_QUEST_ICON, ftbquestsentityvis$useAsQuestIcon);
+        if (!ftbquestsentityvis$visNbt.isEmpty()) {
+            nbt.putString(ftbquestsentityvis$KEY_NBT, ftbquestsentityvis$visNbt);
+        }
     }
 
     @Inject(method = "readData", at = @At("TAIL"), remap = false)
@@ -93,6 +113,7 @@ public abstract class ObservationTaskMixin implements IKillTaskVisOptions {
         ftbquestsentityvis$walkMode = nbt.contains(ftbquestsentityvis$KEY_WALK_MODE) ? OverrideMode.fromName(nbt.getString(ftbquestsentityvis$KEY_WALK_MODE)) : OverrideMode.USE_GLOBAL;
         ftbquestsentityvis$silhouetteMode = nbt.contains(ftbquestsentityvis$KEY_SILHOUETTE_MODE) ? SilhouetteMode.fromName(nbt.getString(ftbquestsentityvis$KEY_SILHOUETTE_MODE)) : SilhouetteMode.NONE;
         ftbquestsentityvis$useAsQuestIcon = nbt.contains(ftbquestsentityvis$KEY_USE_AS_QUEST_ICON) && nbt.getBoolean(ftbquestsentityvis$KEY_USE_AS_QUEST_ICON);
+        ftbquestsentityvis$visNbt = nbt.contains(ftbquestsentityvis$KEY_NBT) ? nbt.getString(ftbquestsentityvis$KEY_NBT) : "";
     }
 
     @Inject(method = "writeNetData", at = @At("TAIL"), remap = false)
@@ -110,6 +131,7 @@ public abstract class ObservationTaskMixin implements IKillTaskVisOptions {
         buf.writeUtf(ftbquestsentityvis$walkMode.name());
         buf.writeUtf(ftbquestsentityvis$silhouetteMode.name());
         buf.writeBoolean(ftbquestsentityvis$useAsQuestIcon);
+        buf.writeUtf(ftbquestsentityvis$visNbt, Short.MAX_VALUE);
     }
 
     @Inject(method = "readNetData", at = @At("TAIL"), remap = false)
@@ -127,5 +149,6 @@ public abstract class ObservationTaskMixin implements IKillTaskVisOptions {
         ftbquestsentityvis$walkMode = OverrideMode.fromName(buf.readUtf());
         ftbquestsentityvis$silhouetteMode = SilhouetteMode.fromName(buf.readUtf());
         ftbquestsentityvis$useAsQuestIcon = buf.readBoolean();
+        ftbquestsentityvis$visNbt = buf.readUtf(Short.MAX_VALUE);
     }
 }

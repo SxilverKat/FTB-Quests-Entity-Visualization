@@ -5,6 +5,8 @@
   "ftbquestsentityvis.remove_entity_icon": "Remove Entity Icon",
 
   "ftbquestsentityvis.config.entity": "Entity",
+  "ftbquestsentityvis.config.nbt": "NBT Data",
+  "ftbquestsentityvis.config.variant": "Variant",
   "ftbquestsentityvis.config.size": "Entity Size",
   "ftbquestsentityvis.config.offset_x": "Entity X Offset",
   "ftbquestsentityvis.config.offset_y": "Entity Y Offset",

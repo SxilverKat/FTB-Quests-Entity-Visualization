@@ -33,10 +33,16 @@ public abstract class KillTaskMixin implements IKillTaskVisOptions/*? if <1.21.1
     @Unique private static final String ftbquestsentityvis$KEY_USE_TAG = "entity_use_tag";
     //?}
     @Unique private static final String ftbquestsentityvis$KEY_USE_AS_QUEST_ICON = "entity_vis_use_as_quest_icon";
+    @Unique private static final String ftbquestsentityvis$KEY_NBT = "entity_vis_nbt";
 
     //? if <1.21.1 {
     @Shadow(remap = false)
     private ResourceLocation entity;
+    //?}
+
+    //? if >=1.21.1 {
+    /*@Shadow(remap = false)
+    private ResourceLocation entityTypeId;*/
     //?}
 
     @Unique private float ftbquestsentityvis$visSize = 1.0F;
@@ -51,6 +57,7 @@ public abstract class KillTaskMixin implements IKillTaskVisOptions/*? if <1.21.1
     @Unique private boolean ftbquestsentityvis$useTag = false;
     //?}
     @Unique private boolean ftbquestsentityvis$useAsQuestIcon = false;
+    @Unique private String ftbquestsentityvis$visNbt = "";
 
     @Override public float ftbquestsentityvis$getVisSize() { return ftbquestsentityvis$visSize; }
     @Override public void ftbquestsentityvis$setVisSize(float size) { this.ftbquestsentityvis$visSize = size; }
@@ -84,6 +91,18 @@ public abstract class KillTaskMixin implements IKillTaskVisOptions/*? if <1.21.1
     @Override public boolean ftbquestsentityvis$getUseAsQuestIcon() { return ftbquestsentityvis$useAsQuestIcon; }
     @Override public void ftbquestsentityvis$setUseAsQuestIcon(boolean useAsQuestIcon) { this.ftbquestsentityvis$useAsQuestIcon = useAsQuestIcon; }
 
+    @Override public String ftbquestsentityvis$getVisNbt() { return ftbquestsentityvis$visNbt; }
+    @Override public void ftbquestsentityvis$setVisNbt(String nbt) { this.ftbquestsentityvis$visNbt = nbt == null ? "" : nbt; }
+
+    @Override
+    public ResourceLocation ftbquestsentityvis$getVisEntityId() {
+        //? if >=1.21.1 {
+        /*return entityTypeId;*/
+        //?} else {
+        return entity;
+        //?}
+    }
+
     @Inject(method = "writeData", at = @At("TAIL"), remap = false)
     //? if >=1.21.1 {
     /*private void ftbquestsentityvis$writeData(CompoundTag nbt, net.minecraft.core.HolderLookup.Provider registries, CallbackInfo ci) {*/
@@ -102,6 +121,9 @@ public abstract class KillTaskMixin implements IKillTaskVisOptions/*? if <1.21.1
         nbt.putBoolean(ftbquestsentityvis$KEY_USE_TAG, ftbquestsentityvis$useTag);
         //?}
         nbt.putBoolean(ftbquestsentityvis$KEY_USE_AS_QUEST_ICON, ftbquestsentityvis$useAsQuestIcon);
+        if (!ftbquestsentityvis$visNbt.isEmpty()) {
+            nbt.putString(ftbquestsentityvis$KEY_NBT, ftbquestsentityvis$visNbt);
+        }
     }
 
     @Inject(method = "readData", at = @At("TAIL"), remap = false)
@@ -122,6 +144,7 @@ public abstract class KillTaskMixin implements IKillTaskVisOptions/*? if <1.21.1
         ftbquestsentityvis$useTag = nbt.contains(ftbquestsentityvis$KEY_USE_TAG) && nbt.getBoolean(ftbquestsentityvis$KEY_USE_TAG);
         //?}
         ftbquestsentityvis$useAsQuestIcon = nbt.contains(ftbquestsentityvis$KEY_USE_AS_QUEST_ICON) && nbt.getBoolean(ftbquestsentityvis$KEY_USE_AS_QUEST_ICON);
+        ftbquestsentityvis$visNbt = nbt.contains(ftbquestsentityvis$KEY_NBT) ? nbt.getString(ftbquestsentityvis$KEY_NBT) : "";
     }
 
     @Inject(method = "writeNetData", at = @At("TAIL"), remap = false)
@@ -142,6 +165,7 @@ public abstract class KillTaskMixin implements IKillTaskVisOptions/*? if <1.21.1
         buf.writeBoolean(ftbquestsentityvis$useTag);
         //?}
         buf.writeBoolean(ftbquestsentityvis$useAsQuestIcon);
+        buf.writeUtf(ftbquestsentityvis$visNbt, Short.MAX_VALUE);
     }
 
     @Inject(method = "readNetData", at = @At("TAIL"), remap = false)
@@ -162,6 +186,7 @@ public abstract class KillTaskMixin implements IKillTaskVisOptions/*? if <1.21.1
         ftbquestsentityvis$useTag = buf.readBoolean();
         //?}
         ftbquestsentityvis$useAsQuestIcon = buf.readBoolean();
+        ftbquestsentityvis$visNbt = buf.readUtf(Short.MAX_VALUE);
     }
 
     //? if <1.21.1 {
